@@ -1,4 +1,4 @@
-# RestAPI---Homework
+# RestAPI Homework
 - Dự án nhỏ cho xử lý bên Back-End bài tập về nhà của nhóm tôi.
 - Framework sử dụng: ``Slim 4``
 
