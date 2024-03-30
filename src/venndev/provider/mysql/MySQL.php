@@ -247,7 +247,7 @@ final class MySQL implements MySQLInterface
                 $reject(new ResultQuery(ResultQuery::FAILED, "Query error!", $errors, $rejects, null));
             } else {
                 $result = $this->mysqli->reap_async_query();
-                $result === false ? $reject(new ResultQuery(ResultQuery::FAILED, $this->mysqli->error, $errors, $rejects, null)) : $resolve(new ResultQuery(ResultQuery::SUCCESS, '', $errors, $rejects, iterator_to_array($result->getIterator())));
+                $result === false ? $reject(new ResultQuery(ResultQuery::FAILED, $this->mysqli->error, $errors, $rejects, null)) : $resolve(new ResultQuery(ResultQuery::SUCCESS, '', $errors, $rejects, is_bool($result) ? $result : iterator_to_array($result->getIterator())));
             }
         });
     }
