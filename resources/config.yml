@@ -6,5 +6,5 @@ database:
   port: 3306
   username: "root"
   password: ""
-  database: "minishop"
+  database: "hoteldb"
 ...
