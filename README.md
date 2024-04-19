@@ -33,7 +33,7 @@
 # Các phương thức để sử dụng và làm bài
 - Phần làm bài ở các `Controllers` và `Middlewares`
 - Middlewares đóng vai trò giống Filter trong TOMCAT mà các bạn hay làm
-- Conrtrollers gần giống với Servlet mà các bạn hay làm trong TOMCAT
+- Controllers gần giống với Servlet mà các bạn hay làm trong TOMCAT
 - Các phương thức có thể nghiên cứu qua [Click Here](https://www.slimframework.com/docs/v4/)
 - Trong đó việc sử dụng các phương thức của `LINK` kia qua hàm ở đây [Click Here](https://github.com/VennDev/RestAPI---Homework/blob/main/src/venndev/index.php#L9)
 - Tôi có code các mẫu ở sẵn 2 mẫu sẵn các bạn coi không hiểu hỏi tôi nhé!
