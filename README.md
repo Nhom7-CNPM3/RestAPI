@@ -46,3 +46,4 @@
 - Lưu ý: phải sửa lại code trong file `test.php` để phù hợp với thứ các bạn code để test thử url
 - Ví dụ gõ lệnh: `php test.php`
 - Ngoài ra có thể thử nghiệm trên các trình duyệt website thông thường qua việc gõ đường link `http://localhost:8080/your_router`
+- Hoặc bạn có thể test data qua PostMan
