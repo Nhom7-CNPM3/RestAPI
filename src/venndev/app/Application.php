@@ -61,46 +61,52 @@ final class Application
                 $methods = $classReflection->getMethods();
                 $attributes = $classReflection->getAttributes();
                 // This is the group of the router
-                $group = '';
+                $group = null;
+                $middlewareGroup = null;
                 foreach ($attributes as $attribute) {
                     $attribute = $attribute->newInstance();
-                    if ($attribute instanceof RequestMapping) $group = $attribute->value;
+                    if ($attribute instanceof RequestMapping) {
+                        $group = $attribute->value;
+                        $middlewareGroup = $attribute->middleware ?? fn($request, $handler) => $handler->handle($request);
+                    }
                 }
 
-                self::$app->group($group, function (RouteCollectorProxy $group) use ($methods, $router) {
-                    foreach ($methods as $method) {
-                        $attributes = $method->getAttributes();
-                        $method = $method->getName();
-                        foreach ($attributes as $attribute) {
-                            $attribute = $attribute->newInstance();
-                            if ($attribute instanceof RequestMapping) {
-                                $callable = function (Request $request, Response $response, array $args) use ($router, $method, $attribute) {
-                                    $response->withHeader('Content-Type', $attribute->produces);
+                if ($group) {
+                    self::$app->group($group, function (RouteCollectorProxy $group) use ($methods, $router) {
+                        foreach ($methods as $method) {
+                            $attributes = $method->getAttributes();
+                            $method = $method->getName();
+                            foreach ($attributes as $attribute) {
+                                $attribute = $attribute->newInstance();
+                                if ($attribute instanceof RequestMapping) {
+                                    $callable = function (Request $request, Response $response, array $args) use ($router, $method, $attribute) {
+                                        $response->withHeader('Content-Type', $attribute->produces);
 
-                                    $queryParamsFromUrl = $request->getQueryParams();
+                                        $queryParamsFromUrl = $request->getQueryParams();
 
-                                    $queryParams = [];
-                                    foreach ($attribute->queryParams as $value) isset($queryParamsFromUrl[$value]) ? $queryParams[$value] = $queryParamsFromUrl[$value] : $queryParams[$value] = null;
+                                        $queryParams = [];
+                                        foreach ($attribute->queryParams as $value) isset($queryParamsFromUrl[$value]) ? $queryParams[$value] = $queryParamsFromUrl[$value] : $queryParams[$value] = null;
 
-                                    $response = $router->$method($request, $response, $args, $queryParams);
+                                        $response = $router->$method($request, $response, $args, $queryParams);
 
-                                    System::runSingleEventLoop();
-                                    return $response;
-                                };
+                                        System::runSingleEventLoop();
+                                        return $response;
+                                    };
 
-                                $middlewareAtt = $attribute->middleware;
-                                $middleware = $middlewareAtt ?? fn($request, $handler) => $handler->handle($request);
+                                    $middlewareAtt = $attribute->middleware;
+                                    $middleware = $middlewareAtt ?? fn($request, $handler) => $handler->handle($request);
 
-                                if ($attribute->method == HttpMethod::GET) $group->get($attribute->value, $callable)->add($middleware);
-                                if ($attribute->method == HttpMethod::POST) $group->post($attribute->value, $callable)->add($middleware);
-                                if ($attribute->method == HttpMethod::PUT) $group->put($attribute->value, $callable)->add($middleware);
-                                if ($attribute->method == HttpMethod::DELETE) $group->delete($attribute->value, $callable)->add($middleware);
-                                if ($attribute->method == HttpMethod::PATCH) $group->patch($attribute->value, $callable)->add($middleware);
-                                if ($attribute->method == HttpMethod::OPTIONS) $group->options($attribute->value, $callable)->add($middleware);
+                                    if ($attribute->method == HttpMethod::GET) $group->get($attribute->value, $callable)->add($middleware);
+                                    if ($attribute->method == HttpMethod::POST) $group->post($attribute->value, $callable)->add($middleware);
+                                    if ($attribute->method == HttpMethod::PUT) $group->put($attribute->value, $callable)->add($middleware);
+                                    if ($attribute->method == HttpMethod::DELETE) $group->delete($attribute->value, $callable)->add($middleware);
+                                    if ($attribute->method == HttpMethod::PATCH) $group->patch($attribute->value, $callable)->add($middleware);
+                                    if ($attribute->method == HttpMethod::OPTIONS) $group->options($attribute->value, $callable)->add($middleware);
+                                }
                             }
                         }
-                    }
-                });
+                    })->add($middlewareGroup);
+                }
             }
         );
     }
