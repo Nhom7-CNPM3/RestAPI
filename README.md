@@ -2,6 +2,9 @@
 - Dự án nhỏ cho xử lý bên Back-End bài tập về nhà của nhóm tôi.
 - Framework sử dụng: ``Slim 4``
 
+# Lưu ý
+- Các controllers của nhóm làm bên data-folder hiện tại chưa chính thức ghi đè vào dự án này vì có cập nhật nữa.
+
 # Mục đích
 - Dự án tạo ra để làm việc xử lý router xử lý các truy vấn từ database và cả security cho phần mềm.
 - Phần làm bài ở các `Controllers` và `Middlewares`
